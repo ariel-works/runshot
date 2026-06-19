@@ -1,0 +1,21 @@
+{
+  "name": "runshot",
+  "version": "0.1.14",
+  "description": "One-shot a complete visual record of any web app — every product screen, email template, and social/link preview, plus a video — then sync it to a Figma flow doc. Config-driven, so the same flow works across apps and doubles as a deterministic CI gate.",
+  "license": "MIT",
+  "author": {
+    "name": "Ariel Diaz"
+  },
+  "keywords": [
+    "screenshots",
+    "product",
+    "design",
+    "qa",
+    "e2e",
+    "onboarding",
+    "playwright",
+    "figma",
+    "video",
+    "social-preview"
+  ]
+}

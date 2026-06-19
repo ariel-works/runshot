@@ -1,0 +1,45 @@
+{
+  "_README": "Copy this file to <your-app-repo>/runshot/skills.config.json and fill it in. It is plain JSON (no real comments) — the _-prefixed keys are inline docs, ignored by the runner. Delete them once you understand the shape. Selectors are Playwright selectors; prefer stable [data-testid] hooks, fall back to attribute/placeholder selectors. See the plugin README for the full field reference.",
+
+  "appName": "YOUR APP",
+  "baseUrl": "http://localhost:3000",
+  "_device": "Any Playwright device descriptor — see https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/deviceDescriptors.ts",
+  "device": "iPhone 14 Pro",
+
+  "walkthrough": {
+    "outputDir": "runshot/artifacts/{{timestamp}}",
+
+    "_mailCatcher": "URL of a Mailpit/Inbucket-compatible mail catcher for local email capture. Supabase local dev bundles one (Mailpit on newer CLIs, Inbucket on older). Omit expectedEmails to skip capture entirely.",
+    "inbucketUrl": "http://127.0.0.1:54324",
+
+    "_freshIdentity": "Each run gets a unique identity via the {{run}} token (a per-run timestamp slug) so reruns never collide. Reference these keys as {{email}}, {{name}}, etc. in step values.",
+    "freshIdentity": {
+      "email": "qa+{{run}}@example.test",
+      "name": "runshot",
+      "password": "runshot-pw-1!"
+    },
+
+    "_steps": "Ordered actions. Every step also takes a screenshot, labeled NN-<route>-<state>.png. Actions: goto | fill | click | waitFor | expectText | screenshot. Common props: route, state, note (manifest label), settleMs (wait after action), fullPage (full-page screenshot). Record mode never throws; assert mode (CI) exits non-zero on any failure.",
+    "steps": [
+      { "action": "goto", "url": "/", "route": "/", "state": "landing", "fullPage": true, "settleMs": 500, "note": "Marketing landing" },
+      { "action": "goto", "url": "/signup", "route": "/signup", "state": "zero", "settleMs": 400, "note": "Create-account zero-state" },
+
+      { "action": "fill", "selector": "input[name=\"name\"]", "value": "{{name}}", "route": "/signup", "state": "name-filled" },
+      { "action": "fill", "selector": "input[type=\"email\"]", "value": "{{email}}", "route": "/signup", "state": "email-filled" },
+      { "action": "fill", "selector": "input[type=\"password\"]", "value": "{{password}}", "route": "/signup", "state": "filled", "note": "Form filled, pre-submit" },
+      { "action": "click", "selector": "button[type=\"submit\"]", "route": "/signup", "state": "submitted", "settleMs": 2500, "note": "Submit account creation" },
+
+      { "action": "goto", "url": "/dashboard", "route": "/dashboard", "state": "post-signup", "fullPage": true, "settleMs": 1500, "note": "First authenticated screen" }
+    ],
+
+    "_expectedEmails": "Optional. Each entry polls the mail catcher for a message in `mailbox` whose subject contains `subjectMatch` (empty = any), captured as HTML + screenshot. Remove this block if your local flow sends no email (e.g. email-confirmation off).",
+    "expectedEmails": [
+      { "mailbox": "qa+{{run}}@example.test", "subjectMatch": "", "timeoutMs": 15000, "note": "Confirmation / magic-link email" }
+    ]
+  },
+
+  "_flowDoc": "Optional, consumed by the flow-doc skill. Set figma.fileKey + pageName to update one Figma page in place idempotently; omit to create a new page per run.",
+  "flowDoc": {
+    "figma": { "fileKey": "", "pageName": "" }
+  }
+}

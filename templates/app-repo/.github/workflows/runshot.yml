@@ -1,0 +1,49 @@
+# Copy to <your-app-repo>/.github/workflows/runshot.yml
+#
+# Runs the SAME walkthrough.mjs the interactive skill uses, in --mode assert:
+# deterministic pass/fail, no model in the loop. One flow definition
+# (runshot/skills.config.json) drives both the local recorder and this gate.
+#
+# Adjust: how the app is started/reached (baseUrl), and whether email
+# assertions run in CI (they need a mail catcher reachable from the runner —
+# usually drop expectedEmails for CI unless you have a real test inbox).
+name: runshot
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  walkthrough:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the app
+        uses: actions/checkout@v6
+
+      - name: Check out the skill engine
+        uses: actions/checkout@v6
+        with:
+          repository: arieldiaz/runshot
+          path: .runshot-engine
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      # --- Start the app under test (REPLACE with your app's startup) ---
+      # - run: npm ci && npm run build && npm run start &
+      # - run: npx wait-on http://localhost:3000
+
+      - name: Install engine deps
+        working-directory: .runshot-engine/scripts   # path within the engine repo to scripts/
+        run: npm ci && npx playwright install --with-deps chromium
+
+      - name: Run walkthrough (assert)
+        run: node .runshot-engine/scripts/walkthrough.mjs --config ./runshot/skills.config.json --mode assert
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runshot-artifacts
+          path: runshot/artifacts/

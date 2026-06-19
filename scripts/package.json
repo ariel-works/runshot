@@ -1,0 +1,18 @@
+{
+  "name": "runshot",
+  "version": "0.1.14",
+  "description": "One-shot a complete visual record of any web app — every screen, email, and social preview, plus a video — then sync it to a Figma flow doc.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Ariel Diaz",
+  "homepage": "https://github.com/arieldiaz/runshot",
+  "repository": { "type": "git", "url": "git+https://github.com/arieldiaz/runshot.git" },
+  "bin": { "runshot": "cli.mjs" },
+  "scripts": { "test": "node test/smoke.mjs" },
+  "files": ["cli.mjs", "walkthrough.mjs", "gallery.mjs", "urls.mjs", "version.mjs", ".env.example"],
+  "engines": { "node": ">=18" },
+  "keywords": ["screenshots", "product", "design", "qa", "e2e", "playwright", "figma", "video", "social-preview", "onboarding"],
+  "dependencies": {
+    "playwright": "^1.49.0"
+  }
+}
