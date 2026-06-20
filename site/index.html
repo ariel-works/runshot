@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>runshot — a complete visual record of any web app</title>
+<meta name="description" content="Record a fresh-account onboarding walkthrough of any web app — video, a screenshot of every screen, the emails it triggers, and social/link previews — then sync it to a Figma flow doc. One config; a QA artifact and a deterministic CI gate.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
+<!-- Open Graph / social preview -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="runshot — a complete visual record of any web app">
+<meta property="og:description" content="Video + every screen + triggered emails + social previews, from one config. A human-reviewable QA artifact and a deterministic CI gate.">
+<meta property="og:url" content="https://runshot.org">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #fbfbfa; --fg: #1b1b1a; --muted: #6b6f6c; --accent: #2d7d6f;
+    --card: #ffffff; --border: #e3e3df; --code-bg: #f3f4f2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14171a; --fg: #e8eae8; --muted: #9aa0a0; --accent: #4fc2ad;
+            --card: #1b1f22; --border: #2a2f33; --code-bg: #11151a; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+    font: 17px/1.65 -apple-system, system-ui, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 22px; }
+  header { text-align: center; padding: 92px 0 48px; }
+  .logo { font-size: 56px; line-height: 1; }
+  h1 { font-size: 40px; letter-spacing: -0.02em; margin: 18px 0 8px; }
+  .tagline { font-size: 20px; color: var(--muted); margin: 0 auto; max-width: 620px; }
+  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 32px 0 4px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+    font-weight: 600; font-size: 15px; padding: 11px 20px; border-radius: 10px;
+    border: 1px solid var(--border); color: var(--fg); background: var(--card); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn:hover { border-color: var(--accent); }
+  section { padding: 30px 0; border-top: 1px solid var(--border); }
+  h2 { font-size: 22px; letter-spacing: -0.01em; margin: 0 0 14px; }
+  p { margin: 0 0 16px; } a { color: var(--accent); }
+  strong { font-weight: 650; }
+  .features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 4px 0; }
+  .feature { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+  .feature h3 { margin: 0 0 6px; font-size: 16px; }
+  .feature p { margin: 0; color: var(--muted); font-size: 15px; }
+  pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px 18px; overflow-x: auto; font-size: 14px; line-height: 1.6; }
+  code { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace; }
+  p code, li code { background: var(--code-bg); padding: 1px 6px; border-radius: 5px; font-size: 0.9em; }
+  ul { padding-left: 22px; } li { margin: 6px 0; }
+  footer { text-align: center; color: var(--muted); font-size: 14px; padding: 40px 0 60px; border-top: 1px solid var(--border); }
+  footer a { color: var(--muted); }
+  @media (max-width: 560px) { .features { grid-template-columns: 1fr; } h1 { font-size: 32px; } header { padding: 64px 0 36px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">📸</div>
+    <h1>runshot</h1>
+    <p class="tagline">One-shot a complete visual record of <em>any</em> web app — every
+      screen, the emails it triggers, and social/link previews, plus a video —
+      then sync it to a Figma flow doc.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/ariel-works/runshot">View on GitHub →</a>
+      <a class="btn" href="https://www.npmjs.com/package/runshot">npm: runshot</a>
+    </div>
+  </header>
+
+  <section>
+    <h2>What it is</h2>
+    <p>runshot drives a fresh-account onboarding walkthrough of any web app in a
+      mobile viewport and records a video, a screenshot of every screen (including
+      zero-states), and any emails the flow triggers. One flow definition produces
+      two outputs: a human-reviewable QA artifact (<code>record</code> mode) and a
+      deterministic CI gate (<code>assert</code> mode).</p>
+    <p>The engine is config-driven, so the same procedure works for every app — the
+      per-app specifics live in that app's <code>runshot/skills.config.json</code>.
+      Nothing about the target app is hard-coded.</p>
+  </section>
+
+  <section>
+    <h2>Two skills</h2>
+    <div class="features">
+      <div class="feature">
+        <h3>walkthrough</h3>
+        <p>Drives the onboarding flow; records video + per-screen screenshots,
+          captures emails, and writes <code>manifest.json</code> + <code>summary.json</code>.</p>
+      </div>
+      <div class="feature">
+        <h3>flow-doc</h3>
+        <p>Turns a run's screens into a Figma flow document — one frame per screen,
+          in flow order — via the Figma MCP write path.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Quick start</h2>
+    <pre><code>npx runshot setup                                       # one-time: install Chromium
+npx runshot record --config ./runshot/skills.config.json
+npx runshot serve                                       # browse captured runs at :8080</code></pre>
+    <p><code>runshot assert</code> is the same capture but exits non-zero on
+      failure — use it as a CI gate.</p>
+  </section>
+
+  <section>
+    <h2>Browse anywhere</h2>
+    <p>The gallery hub serves a phone-framed view of every project's runs. It mounts
+      cleanly at the root, under a sub-path (<code>BASE_PATH=/runshot</code>), or on
+      its own subdomain — every internal link, asset, and API call follows the base
+      path, so it works behind a reverse proxy without escaping its prefix.</p>
+  </section>
+
+  <footer>
+    Built by <a href="https://github.com/ariel-works">Ariel Works</a> ·
+    <a href="https://github.com/ariel-works/runshot">source</a> ·
+    <a href="https://github.com/ariel-works/runshot/blob/main/LICENSE.md">MIT</a>
+  </footer>
+
+</div>
+</body>
+</html>

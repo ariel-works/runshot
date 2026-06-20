@@ -1,16 +1,16 @@
 {
   "name": "runshot",
-  "owner": { "name": "Ariel Diaz", "url": "https://github.com/arieldiaz" },
+  "owner": { "name": "Ariel Works", "url": "https://github.com/ariel-works" },
   "metadata": {
     "description": "runshot — one-shot a complete visual record of any web app.",
-    "version": "0.1.14"
+    "version": "0.1.15"
   },
   "plugins": [
     {
       "name": "runshot",
       "source": ".",
       "description": "One-shot a complete visual record of any web app — every screen, email, and social preview, plus a video — then sync it to a Figma flow doc.",
-      "version": "0.1.14",
+      "version": "0.1.15",
       "category": "testing",
       "keywords": ["screenshots", "product", "design", "qa", "e2e", "playwright", "figma", "video", "social-preview", "onboarding"]
     }

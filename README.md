@@ -20,7 +20,7 @@ target app is hard-coded.
 ## Layout
 
 ```
-plugins/runshot/
+runshot/
 ├── .claude-plugin/plugin.json
 ├── skills/
 │   ├── walkthrough/SKILL.md
@@ -28,7 +28,9 @@ plugins/runshot/
 ├── scripts/
 │   ├── walkthrough.mjs        # the engine (Playwright)
 │   ├── gallery.mjs            # browsable HTML hub for artifacts (multi-project)
+│   ├── urls.mjs               # central base-path / URL helper for the hub
 │   └── package.json
+├── site/                      # static about page (Cloudflare Pages → runshot.org)
 └── templates/app-repo/        # copy these INTO each app repo
     ├── runshot/skills.config.json
     └── .github/workflows/runshot.yml
@@ -37,7 +39,7 @@ plugins/runshot/
 ## Setup (once per machine)
 
 ```bash
-cd plugins/runshot/scripts
+cd scripts
 npm install
 npx playwright install chromium
 ```
@@ -187,6 +189,23 @@ each repo points at that app's ports.
   don't collide. Local QA accounts are fine; never point at production.
 - `flow-doc` needs the Figma MCP **write-to-canvas** path connected, and is
   rate-limit sensitive — see `skills/flow-doc/SKILL.md`.
+
+## About page (Cloudflare Pages → runshot.org)
+
+A static landing/about page lives in [`site/`](site/) — a single self-contained
+`index.html` (no build step) distilled from this README. It's wired for
+**Cloudflare Pages**, which auto-deploys on every push to `main`:
+
+1. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** →
+   pick `ariel-works/runshot`.
+2. Build settings: **Framework preset = None**, **Build command = (empty)**,
+   **Build output directory = `site`**.
+3. **Custom domains** → add `runshot.org` (and `www.runshot.org`). Since the DNS is
+   already on Cloudflare, the records are created for you.
+
+After that, editing `site/index.html` and pushing to `main` redeploys the page
+automatically. (The same folder also works as a GitHub Pages source if you ever
+point Pages at `/site`.)
 
 ## License
 
