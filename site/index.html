@@ -5,102 +5,199 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>runshot — see your whole product, automatically</title>
 <meta name="description" content="See your whole product from one config — every screen, every email, and a flow diagram. A QA artifact and deterministic CI gate for builders who ship fast.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
+<link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <!-- Open Graph / social preview -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="runshot — see your whole product, automatically">
-<meta property="og:description" content="Every screen, every email, a flow diagram — from one config. A QA artifact and CI gate for builders shipping fast with AI.">
+<meta property="og:description" content="Every screen, every email, a flow diagram — from one config. A QA artifact and CI gate for builders shipping fast.">
 <meta property="og:url" content="https://runshot.org">
 <meta name="twitter:card" content="summary_large_image">
 <style>
+  /* ───────────────────────── runshot design tokens ─────────────────────────
+     One source of truth for color, type, space, radius. Mirrors the brand
+     sheet (WOR-35). The gallery adopts the same --rs-* names so the about site
+     and the artifact look like one product. */
   :root {
     color-scheme: light dark;
-    --bg: #fbfbfa; --fg: #1b1b1a; --muted: #6b6f6c; --accent: #2d7d6f;
-    --card: #ffffff; --border: #e3e3df; --code-bg: #f3f4f2;
+    --rs-paper:#FBFBFA; --rs-surface:#FFFFFF; --rs-ink:#16191B; --rs-muted:#566058;
+    --rs-border:#E6E6E1; --rs-code:#F1F4F1;
+    --rs-accent:#0C7D66; --rs-accent-text:#0A6A55; --rs-accent-press:#085842; --rs-on-accent:#FFFFFF;
+    --rs-ok:#1F9D55; --rs-fail:#D6336C; --rs-warn:#C9781F;
+    --rs-shadow: 0 1px 2px #16191b0a, 0 8px 24px -12px #16191b1f;
+    --rs-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    --rs-sans: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
-    :root { --bg: #14171a; --fg: #e8eae8; --muted: #9aa0a0; --accent: #4fc2ad;
-            --card: #1b1f22; --border: #2a2f33; --code-bg: #11151a; }
+    :root {
+      --rs-paper:#0F1214; --rs-surface:#171B1E; --rs-ink:#E8EAE8; --rs-muted:#9AA0A0;
+      --rs-border:#262B2F; --rs-code:#10151A;
+      --rs-accent:#36CDAE; --rs-accent-text:#52DAC0; --rs-accent-press:#6FE6D0; --rs-on-accent:#08110E;
+      --rs-shadow: 0 1px 2px #0006, 0 12px 32px -16px #000a;
+    }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--fg);
-    font: 17px/1.65 -apple-system, system-ui, "Segoe UI", sans-serif;
-    -webkit-font-smoothing: antialiased; }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 0 22px; }
-  header { text-align: center; padding: 92px 0 48px; }
-  .logo { font-size: 56px; line-height: 1; }
-  h1 { font-size: 40px; letter-spacing: -0.02em; margin: 18px 0 8px; }
-  .tagline { font-size: 20px; color: var(--muted); margin: 0 auto; max-width: 620px; }
-  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 32px 0 4px; }
+  body { margin: 0; background: var(--rs-paper); color: var(--rs-ink);
+    font: 17px/1.65 var(--rs-sans); -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+  a { color: var(--rs-accent-text); }
+
+  /* hero ------------------------------------------------------------------- */
+  header { text-align: center; padding: 96px 0 16px; }
+  .lockup { display: inline-flex; align-items: center; gap: 14px; color: var(--rs-accent); }
+  .lockup svg { width: 46px; height: 46px; }
+  .lockup .word { font: 700 44px/1 var(--rs-sans); letter-spacing: -0.03em; color: var(--rs-ink); }
+  .eyebrow { font: 600 12.5px/1 var(--rs-mono); letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--rs-accent-text); margin: 28px 0 0; }
+  h1.tagline { font-size: 27px; line-height: 1.32; letter-spacing: -0.02em; font-weight: 600;
+    margin: 12px auto 0; max-width: 600px; }
+  .tagline em { color: var(--rs-accent-text); font-style: normal; }
+  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 30px 0 4px; }
   .btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
     font-weight: 600; font-size: 15px; padding: 11px 20px; border-radius: 10px;
-    border: 1px solid var(--border); color: var(--fg); background: var(--card); }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .btn:hover { border-color: var(--accent); }
-  section { padding: 30px 0; border-top: 1px solid var(--border); }
-  h2 { font-size: 22px; letter-spacing: -0.01em; margin: 0 0 14px; }
-  p { margin: 0 0 16px; } a { color: var(--accent); }
-  strong { font-weight: 650; }
+    border: 1px solid var(--rs-border); color: var(--rs-ink); background: var(--rs-surface);
+    transition: border-color .15s, transform .05s; }
+  .btn:hover { border-color: var(--rs-accent); } .btn:active { transform: translateY(1px); }
+  .btn.primary { background: var(--rs-accent); border-color: var(--rs-accent); color: var(--rs-on-accent); }
+  .btn.primary:hover { background: var(--rs-accent-press); border-color: var(--rs-accent-press); }
+  .cmd { display: inline-flex; align-items: center; gap: 10px; margin: 26px auto 0; padding: 10px 16px;
+    background: var(--rs-code); border: 1px solid var(--rs-border); border-radius: 10px;
+    font: 14px/1 var(--rs-mono); color: var(--rs-ink); }
+  .cmd .dollar { color: var(--rs-accent-text); }
+
+  /* "what you get" chips --------------------------------------------------- */
+  .gets { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 30px 0 4px; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 550;
+    padding: 7px 13px; border-radius: 999px; border: 1px solid var(--rs-border);
+    background: var(--rs-surface); color: var(--rs-ink); }
+  .chip b { color: var(--rs-accent-text); font-weight: 700; }
+
+  /* sections --------------------------------------------------------------- */
+  section { padding: 34px 0; border-top: 1px solid var(--rs-border); }
+  h2 { font-size: 13px; font-family: var(--rs-mono); letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--rs-muted); margin: 0 0 16px; font-weight: 600; }
+  .lead { font-size: 19px; line-height: 1.55; margin: 0 0 16px; letter-spacing: -0.01em; }
+  p { margin: 0 0 16px; } strong { font-weight: 650; }
   .features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 4px 0; }
-  .feature { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
-  .feature h3 { margin: 0 0 6px; font-size: 16px; }
-  .feature p { margin: 0; color: var(--muted); font-size: 15px; }
-  pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px;
-    padding: 16px 18px; overflow-x: auto; font-size: 14px; line-height: 1.6; }
-  code { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace; }
-  p code, li code { background: var(--code-bg); padding: 1px 6px; border-radius: 5px; font-size: 0.9em; }
-  ul { padding-left: 22px; } li { margin: 6px 0; }
-  footer { text-align: center; color: var(--muted); font-size: 14px; padding: 40px 0 60px; border-top: 1px solid var(--border); }
-  footer a { color: var(--muted); }
-  @media (max-width: 560px) { .features { grid-template-columns: 1fr; } h1 { font-size: 32px; } header { padding: 64px 0 36px; } }
+  .feature { background: var(--rs-surface); border: 1px solid var(--rs-border); border-radius: 14px;
+    padding: 20px 22px; box-shadow: var(--rs-shadow); }
+  .feature .ft { display: flex; align-items: center; gap: 9px; margin: 0 0 8px; }
+  .feature h3 { margin: 0; font-size: 16px; font-family: var(--rs-mono); letter-spacing: -0.01em; }
+  .feature .dot { width: 7px; height: 7px; border-radius: 999px; background: var(--rs-accent); flex: none; }
+  .feature p { margin: 0; color: var(--rs-muted); font-size: 15px; line-height: 1.55; }
+  .two-out { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .out { border: 1px solid var(--rs-border); border-radius: 14px; padding: 18px 20px; background: var(--rs-surface); }
+  .out .tag { font: 600 11.5px/1 var(--rs-mono); letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--rs-accent-text); }
+  .out h3 { margin: 8px 0 6px; font-size: 16px; }
+  .out p { margin: 0; color: var(--rs-muted); font-size: 14.5px; line-height: 1.55; }
+  pre { background: var(--rs-code); border: 1px solid var(--rs-border); border-radius: 14px;
+    padding: 18px 20px; overflow-x: auto; font-size: 14px; line-height: 1.7; }
+  pre code { font-family: var(--rs-mono); }
+  pre .c { color: var(--rs-muted); } pre .a { color: var(--rs-accent-text); }
+  p code, li code { background: var(--rs-code); padding: 1.5px 6px; border-radius: 6px;
+    font-family: var(--rs-mono); font-size: 0.88em; }
+  ul { padding-left: 22px; } li { margin: 7px 0; }
+
+  footer { text-align: center; color: var(--rs-muted); font-size: 14px;
+    padding: 40px 0 64px; border-top: 1px solid var(--rs-border); }
+  footer a { color: var(--rs-muted); }
+  footer .fmark { display: inline-flex; align-items: center; gap: 8px; color: var(--rs-accent);
+    margin-bottom: 14px; }
+  footer .fmark svg { width: 22px; height: 22px; }
+  footer .fmark span { color: var(--rs-muted); font: 600 13px/1 var(--rs-mono); letter-spacing: 0.04em; }
+
+  @media (max-width: 600px) {
+    .features, .two-out { grid-template-columns: 1fr; }
+    header { padding: 64px 0 8px; } .lockup .word { font-size: 36px; } .lockup svg { width: 38px; height: 38px; }
+    h1.tagline { font-size: 23px; } .cmd { font-size: 12.5px; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <header>
-    <div class="logo">📸</div>
-    <h1>runshot</h1>
-    <p class="tagline">See your whole product, automatically — every screen, every
-      email, and a flow diagram, from one config.</p>
+    <div class="lockup">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <g stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 10 V3 H10"/><path d="M22 3 H29 V10"/><path d="M29 22 V29 H22"/><path d="M10 29 H3 V22"/>
+        </g>
+        <path d="M13.3 11.3 L21.7 16 L13.3 20.7 Z" fill="currentColor"/>
+      </svg>
+      <span class="word">runshot</span>
+    </div>
+    <p class="eyebrow">Visual QA · one config · any web app</p>
+    <h1 class="tagline">See your whole product, <em>automatically</em> —
+      every screen, every email, and a flow diagram from one config.</h1>
     <div class="cta">
       <a class="btn primary" href="https://github.com/ariel-works/runshot">View on GitHub →</a>
       <a class="btn" href="https://www.npmjs.com/package/runshot">npm: runshot</a>
+    </div>
+    <div class="cmd"><span class="dollar">$</span><span>npx runshot record</span></div>
+    <div class="gets">
+      <span class="chip"><b>▶</b> Video</span>
+      <span class="chip"><b>▦</b> Every screen</span>
+      <span class="chip"><b>✉</b> Triggered emails</span>
+      <span class="chip"><b>↗</b> Link previews</span>
+      <span class="chip"><b>⤳</b> Editable flow doc</span>
     </div>
   </header>
 
   <section>
     <h2>What it is</h2>
-    <p>Builders shipping fast with AI can push code faster than ever — seeing what
-      got built still means clicking through every flow by hand. Runshot closes that
-      gap: run one command and get a complete visual record of any web app.</p>
-    <p>Every screen (including zero-states), every email the flow triggers, a video
-      walkthrough, and an editable flow diagram — from a single config. One config
-      per app; nothing hard-coded. Two outputs: a human-reviewable QA artifact
-      (<code>record</code> mode) and a deterministic CI gate (<code>assert</code> mode).</p>
+    <p class="lead">runshot drives a fresh-account onboarding walkthrough of any web app
+      in a mobile viewport and records the whole thing — so a human can see exactly
+      what a new user sees.</p>
+    <p>It captures a video, a screenshot of every screen (including zero-states), and any
+      emails the flow triggers. One flow definition produces two outputs: a human-reviewable
+      QA artifact and a deterministic CI gate.</p>
+    <p>The engine is config-driven, so the same procedure works for every app — the
+      per-app specifics live in that app's <code>runshot/skills.config.json</code>.
+      Nothing about the target app is hard-coded.</p>
+  </section>
+
+  <section>
+    <h2>One run, two outputs</h2>
+    <div class="two-out">
+      <div class="out">
+        <span class="tag">record mode</span>
+        <h3>A QA artifact</h3>
+        <p>A browsable gallery — phone-framed screens laid out in flow order, the session
+          video, captured emails, and link-preview mockups. Something you <em>want</em> to share.</p>
+      </div>
+      <div class="out">
+        <span class="tag">assert mode</span>
+        <h3>A CI gate</h3>
+        <p>The same capture, but it exits non-zero on failure. Drop it into CI and every
+          PR proves the onboarding flow still renders, end to end.</p>
+      </div>
+    </div>
   </section>
 
   <section>
     <h2>Two skills</h2>
     <div class="features">
       <div class="feature">
-        <h3>walkthrough</h3>
+        <div class="ft"><span class="dot"></span><h3>walkthrough</h3></div>
         <p>Drives the onboarding flow; records video + per-screen screenshots,
           captures emails, and writes <code>manifest.json</code> + <code>summary.json</code>.</p>
       </div>
       <div class="feature">
-        <h3>flow / draw.io</h3>
-        <p>Turns a run's screens into an editable draw.io flow diagram — one frame
-          per screen, in flow order. Diff-able, portable, no account required.</p>
+        <div class="ft"><span class="dot"></span><h3>flow-doc</h3></div>
+        <p>Turns a run's screens into an editable flow diagram — one frame per screen,
+          in flow order — as <code>flow.drawio</code> (open in draw.io) or via the Figma MCP write path.</p>
       </div>
     </div>
   </section>
 
   <section>
     <h2>Quick start</h2>
-    <pre><code>npx runshot setup                                       # one-time: install Chromium
-npx runshot record --config ./runshot/skills.config.json
-npx runshot serve                                       # browse captured runs at :8080</code></pre>
+    <pre><code><span class="c"># one-time: install Chromium</span>
+npx runshot setup
+<span class="c"># capture a run from your config</span>
+npx runshot record <span class="a">--config</span> ./runshot/skills.config.json
+<span class="c"># browse captured runs at :8080</span>
+npx runshot serve</code></pre>
     <p><code>runshot assert</code> is the same capture but exits non-zero on
       failure — use it as a CI gate.</p>
   </section>
@@ -114,9 +211,18 @@ npx runshot serve                                       # browse captured runs a
   </section>
 
   <footer>
-    Built by <a href="https://github.com/ariel-works">Ariel Works</a> ·
+    <div class="fmark">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <g stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 10 V3 H10"/><path d="M22 3 H29 V10"/><path d="M29 22 V29 H22"/><path d="M10 29 H3 V22"/>
+        </g>
+        <path d="M13.3 11.3 L21.7 16 L13.3 20.7 Z" fill="currentColor"/>
+      </svg>
+      <span>runshot</span>
+    </div>
+    <p>Built by <a href="https://github.com/ariel-works">Ariel Works</a> ·
     <a href="https://github.com/ariel-works/runshot">source</a> ·
-    <a href="https://github.com/ariel-works/runshot/blob/main/LICENSE.md">MIT</a>
+    <a href="https://github.com/ariel-works/runshot/blob/main/LICENSE.md">MIT</a></p>
   </footer>
 
 </div>
