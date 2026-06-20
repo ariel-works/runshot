@@ -11,8 +11,8 @@ Any ticket that changes a user-visible surface needs **ChiefDesigner** sign-off
 
 - the about-site (`site/`) and the npm/README brand copy + lockups,
 - the gallery (`scripts/gallery.mjs` — hub, run, and Screens views),
-- the draw.io flow output styling, OG/social cards, favicons, and any other
-  rendered artifact a user or prospect sees.
+- OG/social cards, favicons, and any other rendered artifact a user or
+  prospect sees.
 
 Pure-internal changes (engine logic in `scripts/walkthrough.mjs`, tests, CI,
 config plumbing with no visual surface) do **not** need design review — ship them
