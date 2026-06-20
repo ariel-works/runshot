@@ -1,0 +1,91 @@
+# Design-stage trigger safety net (WOR-68).
+#
+# Warns — never fails — when a PR's diff touches UI / site / gallery markup or
+# brand tokens but the PR is missing the `ui-visible` label. A missing label
+# means the design-review stage (WOR-67 Option 1) was likely not attached, so a
+# visual change could ship without a Chief Designer look. This is the automated
+# backstop for the manual SOP (WOR-45).
+#
+# Non-blocking by design for launch week: the job always exits 0. It surfaces a
+# GitHub Actions warning annotation + a PR job summary so the gap is visible
+# without gating merge. Promote to a hard fail later only if the team wants it.
+name: ui-visible label check
+
+on:
+  pull_request:
+    # `labeled`/`unlabeled` so the warning clears as soon as someone adds the
+    # label, without needing a new push.
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+jobs:
+  ui-visible-label:
+    name: warn if UI diff lacks ui-visible label
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out PR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Warn when UI diff lacks ui-visible label
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HAS_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'ui-visible') }}
+        run: |
+          set -euo pipefail
+
+          # UI / site / gallery markup + brand tokens. Tune as the surface
+          # grows (keep in sync with the WOR-45 SOP glob set).
+          UI_GLOBS=(
+            'site/**'
+            'scripts/gallery.mjs'
+            'scripts/walkthrough.mjs'
+            'scripts/flow-drawio.mjs'
+            '**/*.css'
+            '**/*.html'
+            '**/*.svg'
+            '**/brand/**'
+          )
+
+          git fetch --no-tags --depth=1 origin "$BASE_SHA" 2>/dev/null || true
+
+          CHANGED="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- "${UI_GLOBS[@]}" || true)"
+
+          if [ -z "$CHANGED" ]; then
+            echo "No UI-glob files changed — nothing to check."
+            echo "✅ No UI-visible files touched in this PR." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if [ "$HAS_LABEL" = "true" ]; then
+            echo "UI files changed and \`ui-visible\` label is present — good."
+            {
+              echo "### ✅ ui-visible label present"
+              echo ""
+              echo "This PR touches UI/brand files and carries the \`ui-visible\` label."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # UI changed, label missing -> warn (non-blocking).
+          echo "::warning title=Missing ui-visible label::This PR changes UI/brand files but lacks the 'ui-visible' label. Add it (or attach the design-review stage) so the Chief Designer reviews visual changes. See WOR-45 SOP."
+          {
+            echo "### ⚠️ Missing \`ui-visible\` label"
+            echo ""
+            echo "This PR touches UI / site / gallery markup or brand tokens but does **not** carry the \`ui-visible\` label."
+            echo ""
+            echo "Add the \`ui-visible\` label (or attach the design-review stage) so visual changes get a Chief Designer look. This check is **non-blocking** — see the [WOR-45 SOP](https://github.com/ariel-works/runshot)."
+            echo ""
+            echo "**UI files changed:**"
+            echo ""
+            echo '```'
+            echo "$CHANGED"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # Non-blocking: always succeed.
+          exit 0
