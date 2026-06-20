@@ -21,6 +21,7 @@ import { createReadStream } from "node:fs";
 import { homedir } from "node:os";
 import { VERSION } from "./version.mjs";
 import { withBasePath, appUrl, getBasePath, stripBasePath } from "./urls.mjs";
+import { buildDrawioXml, writeDrawioForRun } from "./flow-drawio.mjs";
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, cur, i, arr) => {
@@ -144,7 +145,12 @@ const PAGE = (title, body, crumbs, extra) => `<!doctype html><meta charset="utf8
   .tabs { display: flex; gap: 6px; }
   .tabs button { font: inherit; padding: 6px 14px; border: 1px solid #8884; border-radius: 8px; background: transparent; color: inherit; cursor: pointer; }
   .tabs button.active { background: #29704114; border-color: #297041; color: #297041; font-weight: 600; }
-  .canvaswrap { overflow: auto; width: 100%; height: calc(100vh - 160px); border-top: 1px solid #8884; }
+  .flowbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 0 10px; font-size: 13px; }
+  .flowbar .dl { font-weight: 600; color: #297041; text-decoration: none; border: 1px solid #29704155; border-radius: 7px; padding: 3px 10px; }
+  .flowbar .dl:hover { background: #29704114; }
+  .flowbar #drawiobtn { margin-left: auto; }
+  #drawioview { width: 100%; height: calc(100vh - 200px); overflow: auto; border-top: 1px solid #8884; }
+  .canvaswrap { overflow: auto; width: 100%; height: calc(100vh - 200px); border-top: 1px solid #8884; }
   .canvas { position: relative; }
   .arrows { position: absolute; left: 0; top: 0; pointer-events: none; }
   .arrows path { stroke: #297041; stroke-width: 2; fill: none; opacity: .75; }
@@ -241,6 +247,24 @@ document.getElementById('device').addEventListener('change', function(e){ setDev
 var vwrap = document.getElementById('varwrap');
 if(vwrap){ vwrap.querySelectorAll('.vt').forEach(function(btn){ btn.addEventListener('click', function(){ setVariant(btn.dataset.variant); }); }); }
 document.querySelectorAll('.homecard').forEach(function(b){ b.addEventListener('click', function(){ showTab(b.dataset.tab); }); });
+// draw.io interactive view (WOR-27): opt-in toggle. Renders the flow with the
+// official diagrams.net viewer; the viewer script is only fetched on first use,
+// so the default canvas view stays fully offline.
+function toggleDrawio(){
+  var host=document.getElementById('drawioview'), wrap=document.querySelector('.canvaswrap'), btn=document.getElementById('drawiobtn');
+  if(!host||!wrap||!btn) return;
+  var showing = host.style.display!=='none';
+  if(showing){ host.style.display='none'; wrap.style.display=''; btn.textContent='▶ Interactive draw.io view'; return; }
+  wrap.style.display='none'; host.style.display=''; btn.textContent='◀ Back to canvas';
+  if(host.dataset.ready) return;
+  host.dataset.ready='1';
+  var div=document.createElement('div'); div.className='mxgraph'; div.style.maxWidth='100%';
+  div.setAttribute('data-mxgraph', JSON.stringify({xml:D.drawioXml, nav:true, resize:true, toolbar:'zoom layers pages', 'border':20}));
+  host.appendChild(div);
+  if(window.GraphViewer && window.GraphViewer.processElements){ window.GraphViewer.processElements(); }
+  else { var sc=document.createElement('script'); sc.src='https://viewer.diagrams.net/js/viewer-static.min.js'; document.body.appendChild(sc); }
+}
+var dbtn=document.getElementById('drawiobtn'); if(dbtn) dbtn.addEventListener('click', toggleDrawio);
 renderTab(tabFromHash()); setDevice(document.getElementById('device').value);
 window.addEventListener('resize', function(){ document.querySelectorAll('.nframe').forEach(checkFrame); });
 </script>`;
@@ -430,6 +454,18 @@ async function buildRun(run, project, seq) {
     </figure>`;
   }).join("");
 
+  // draw.io flow (WOR-27): emit an editable flow.drawio next to the run (images
+  // embedded → portable for download / desktop editing), and keep a light inline
+  // copy (relative image refs) for the opt-in in-gallery interactive viewer.
+  // Best-effort: a generator hiccup must never break the gallery build.
+  let drawioXml = null;
+  try {
+    if (mscreens.length) {
+      await writeDrawioForRun(run.dir, { device: def, embed: true });
+      drawioXml = await buildDrawioXml({ manifest: run.manifest, runDir: run.dir, device: def, embed: false });
+    }
+  } catch (e) { console.warn(`runshot gallery: draw.io flow skipped for ${run.name} — ${e.message}`); }
+
   const socialManifest = await readJSON(join(run.dir, "social", "manifest.json"));
   const ctx = [s.appVersion && `app v${esc(s.appVersion)}`, s.gitBranch && esc(s.gitBranch), s.gitCommit && `<code>${esc(s.gitCommit)}</code>`, s.qaVersion && `captured by qa v${esc(s.qaVersion)}`].filter(Boolean).join(" · ");
   const badge = s.ok ? `<span class="badge ok">✓ ok</span>` : `<span class="badge fail">✗ ${(s.failures || []).length} failure(s)</span>`;
@@ -454,14 +490,16 @@ async function buildRun(run, project, seq) {
         ${socialManifest ? `<button class="homecard" data-tab="social"><b>Social →</b><span class="muted">${(socialManifest.assets || []).length} OG / icon / brand assets</span></button>` : ""}
       </div>
     </div>
-    <div id="tab-screens" class="tab"><div class="canvaswrap"><div class="canvas" style="width:${L0.cw}px;height:${L0.ch}px">
+    <div id="tab-screens" class="tab">
+      ${drawioXml ? `<div class="flowbar"><a class="dl" href="flow.drawio" download>✎ flow.drawio</a><span class="muted">— open in <a href="https://app.diagrams.net" target="_blank" rel="noopener">draw.io</a> or the VS Code draw.io extension to rearrange / annotate / re-export</span><button id="drawiobtn" class="vt">▶ Interactive draw.io view</button></div>` : ""}
+      <div class="canvaswrap"><div class="canvas" style="width:${L0.cw}px;height:${L0.ch}px">
       <svg class="arrows" width="${L0.cw}" height="${L0.ch}"><defs><marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#297041"/></marker></defs><g id="arrowpaths">${L0.arrows}</g></svg>
       ${cards}
-    </div></div></div>
+    </div></div>${drawioXml ? `<div id="drawioview" style="display:none"></div>` : ""}</div>
     <div id="tab-video" class="tab"><video id="vid" controls preload="metadata"></video></div>
     <div id="tab-emails" class="tab">${project ? `<p class="muted">Emails captured during this run. <a href="${link(`/${project}/emails`)}">📧 View all branded email templates →</a></p>` : ""}<div id="emailwrap" class="grid"></div></div>
     <div id="tab-social" class="tab">${socialManifest ? renderSocial(socialManifest, "social/") : '<p class="muted">No social assets captured for this run.</p>'}</div>
-    ${RUN_JS(JSON.stringify({ sub: SUB, videos: VIDEOS, emails: EMAILS, layouts, variants }))}`;
+    ${RUN_JS(JSON.stringify({ sub: SUB, videos: VIDEOS, emails: EMAILS, layouts, variants, drawioXml }))}`;
   await writeFile(join(run.dir, "index.html"), PAGE(runName, body, navHtml), "utf8");
 }
 
