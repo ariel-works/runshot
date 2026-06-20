@@ -1,0 +1,45 @@
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="design-review-flow" name="Design review handoff">
+    <mxGraphModel dx="900" dy="600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <!-- Swimlanes -->
+        <mxCell id="lane-impl" value="Implementer" style="swimlane;horizontal=0;startSize=28;fillColor=#E8F4F0;strokeColor=#0C7D66;fontStyle=1;fontColor=#0C4A3E;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="1000" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-cd" value="ChiefDesigner (reviewer)" style="swimlane;horizontal=0;startSize=28;fillColor=#FBF3E6;strokeColor=#B8860B;fontStyle=1;fontColor=#7A5A00;" vertex="1" parent="1">
+          <mxGeometry x="40" y="230" width="1000" height="170" as="geometry" />
+        </mxCell>
+        <!-- Implementer nodes -->
+        <mxCell id="n1" value="Work done&#10;(visual surface changed)&#10;status: in_progress" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0C7D66;fontColor=#0C4A3E;" vertex="1" parent="1">
+          <mxGeometry x="90" y="100" width="170" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" value="Hand off&#10;assignee = ChiefDesigner&#10;status = in_review" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0C7D66;strokeColor=#0A5C4C;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="100" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n6" value="Continue to&#10;done / merge" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0C7D66;fontColor=#0C4A3E;" vertex="1" parent="1">
+          <mxGeometry x="860" y="100" width="140" height="80" as="geometry" />
+        </mxCell>
+        <!-- ChiefDesigner nodes -->
+        <mxCell id="n3" value="Review surface&#10;(now assignee → can write)&#10;render visual truth" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B8860B;fontColor=#7A5A00;" vertex="1" parent="1">
+          <mxGeometry x="320" y="270" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" value="Post verdict + attach evidence&#10;reassign back to implementer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FBF3E6;strokeColor=#B8860B;fontColor=#7A5A00;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="270" width="200" height="80" as="geometry" />
+        </mxCell>
+        <!-- Decision -->
+        <mxCell id="dec" value="Verdict?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#B8860B;fontColor=#7A5A00;" vertex="1" parent="1">
+          <mxGeometry x="610" y="100" width="120" height="80" as="geometry" />
+        </mxCell>
+        <!-- Edges -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0C7D66;" edge="1" parent="1" source="n1" target="n2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" value="handoff" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#444;fontColor=#444;" edge="1" parent="1" source="n2" target="n3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B8860B;" edge="1" parent="1" source="n3" target="n4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" value="reassign back" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#444;fontColor=#444;" edge="1" parent="1" source="n4" target="dec"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" value="PASS → in_review" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0C7D66;fontColor=#0C7D66;fontStyle=1;" edge="1" parent="1" source="dec" target="n6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6" value="CHANGES → in_progress (re-hand off)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#C0392B;fontColor=#C0392B;fontStyle=1;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="dec" target="n1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
