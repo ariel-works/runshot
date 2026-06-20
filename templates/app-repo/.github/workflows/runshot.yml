@@ -23,7 +23,7 @@ jobs:
       - name: Check out the skill engine
         uses: actions/checkout@v6
         with:
-          repository: arieldiaz/runshot
+          repository: ariel-works/runshot
           path: .runshot-engine
 
       - uses: actions/setup-node@v6

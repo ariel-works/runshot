@@ -1,6 +1,6 @@
 {
   "name": "runshot",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "One-shot a complete visual record of any web app — every screen, email, and social preview, plus a video — then sync it to a Figma flow doc.",
   "type": "module",
   "license": "MIT",
