@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" role="img" aria-label="runshot">
+  <!-- crop frame = the "shot" -->
+  <g stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 10 V3 H10"/>
+    <path d="M22 3 H29 V10"/>
+    <path d="M29 22 V29 H22"/>
+    <path d="M10 29 H3 V22"/>
+  </g>
+  <!-- play triangle = the "run" -->
+  <path d="M13.3 11.3 L21.7 16 L13.3 20.7 Z" fill="currentColor"/>
+</svg>

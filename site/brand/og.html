@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><style>
+  /* Source for the 1200×630 social card. Render with brand/render-og.js → og.png.
+     Uses the same runshot tokens as the about site so the unfurl matches the page. */
+  :root{
+    --ink:#0F1214; --surface:#171B1E; --fg:#E8EAE8; --muted:#9AA0A0;
+    --mint:#36CDAE; --mint-soft:#52DAC0; --border:#262B2F;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+    --sans:-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1200px;height:630px}
+  body{background:
+        radial-gradient(900px 520px at 78% -8%, #14322c 0%, rgba(20,50,44,0) 60%),
+        var(--ink);
+      color:var(--fg);font-family:var(--sans);position:relative;overflow:hidden}
+  .frame{position:absolute;inset:18px;border:1px solid var(--border);border-radius:22px}
+  .pad{position:absolute;inset:0;padding:72px 78px;display:flex;flex-direction:column;justify-content:space-between}
+  .lockup{display:flex;align-items:center;gap:18px;color:var(--mint)}
+  .lockup svg{width:58px;height:58px}
+  .lockup .word{font:700 54px/1 var(--sans);letter-spacing:-0.03em;color:var(--fg)}
+  .eyebrow{font:600 18px/1 var(--mono);letter-spacing:0.14em;text-transform:uppercase;color:var(--mint-soft);margin-top:6px}
+  h1{font:650 64px/1.12 var(--sans);letter-spacing:-0.025em;max-width:980px}
+  h1 em{color:var(--mint-soft);font-style:normal}
+  .sub{font:400 27px/1.45 var(--sans);color:var(--muted);margin-top:20px;max-width:920px}
+  .row{display:flex;align-items:center;gap:16px}
+  .cmd{display:inline-flex;align-items:center;gap:12px;padding:14px 22px;border:1px solid var(--border);
+    border-radius:12px;background:#10151a;font:22px/1 var(--mono);color:var(--fg)}
+  .cmd .d{color:var(--mint-soft)}
+  .host{margin-left:auto;font:600 22px/1 var(--mono);letter-spacing:0.04em;color:var(--muted)}
+</style></head>
+<body>
+  <div class="frame"></div>
+  <div class="pad">
+    <div>
+      <div class="lockup">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 10 V3 H10"/><path d="M22 3 H29 V10"/><path d="M29 22 V29 H22"/><path d="M10 29 H3 V22"/>
+          </g>
+          <path d="M13.3 11.3 L21.7 16 L13.3 20.7 Z" fill="currentColor"/>
+        </svg>
+        <span class="word">runshot</span>
+      </div>
+      <div class="eyebrow">Visual QA · one config · any web app</div>
+    </div>
+    <div>
+      <h1>See your whole product, <em>automatically</em>.</h1>
+      <p class="sub">Every screen, every email, a video, and an editable flow diagram —
+        from one config. A QA artifact and a deterministic CI gate.</p>
+    </div>
+    <div class="row">
+      <span class="cmd"><span class="d">$</span> npx runshot record</span>
+      <span class="host">runshot.org</span>
+    </div>
+  </div>
+</body></html>
