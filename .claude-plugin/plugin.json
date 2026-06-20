@@ -1,9 +1,9 @@
 {
   "name": "runshot",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "homepage": "https://github.com/ariel-works/runshot",
   "repository": "https://github.com/ariel-works/runshot",
-  "description": "One-shot a complete visual record of any web app — every product screen, email template, and social/link preview, plus a video — then lay every screen out as an editable draw.io flow diagram (Figma export optional). Config-driven, so the same flow works across apps and doubles as a deterministic CI gate.",
+  "description": "One-shot a complete visual record of any web app — every product screen, email template, and social/link preview, plus a video — laid out as a browsable flow canvas (Figma export optional). Config-driven, so the same flow works across apps and doubles as a deterministic CI gate.",
   "license": "MIT",
   "author": {
     "name": "Ariel Diaz"
@@ -16,8 +16,6 @@
     "e2e",
     "onboarding",
     "playwright",
-    "drawio",
-    "flow-diagram",
     "figma",
     "video",
     "social-preview"

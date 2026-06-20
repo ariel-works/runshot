@@ -7,18 +7,18 @@ description: >-
   "build a Figma flow", "document the screens in Figma", "update the flow doc", or
   "make a flow diagram of the onboarding". Consumes the artifacts from a prior
   `walkthrough` run. This is an **optional** capability and requires the Figma MCP
-  write path to be connected. The default editable flow output is draw.io (every
-  gallery build emits a `flow.drawio`); use this skill only when the user
-  specifically wants the flow in Figma.
+  write path to be connected. The gallery already renders a flow canvas with no
+  skill needed; use this skill only when the user specifically wants the flow in
+  Figma.
 ---
 
 # Figma Flow Doc (optional export)
 
-> **Default flow output is draw.io, not Figma.** Every `runshot gallery` build
-> already emits an editable `flow.drawio` next to the run — no skill, account, or
-> MCP server needed (see the repo README → "draw.io flow"). Reach for this Figma
-> skill only when the user explicitly wants the flow inside Figma and the Figma
-> MCP **write** path is connected.
+> **The gallery already renders a flow canvas — Figma is optional.** Every
+> `runshot gallery` build lays each run's screens out in flow order in the Screens
+> tab, no skill, account, or MCP server needed. Reach for this Figma skill only
+> when the user explicitly wants the flow inside Figma and the Figma MCP **write**
+> path is connected.
 
 Turns the screenshots captured by the `walkthrough` skill into a maintained Figma
 flow document: one frame per screen, arranged left-to-right (or in lanes per

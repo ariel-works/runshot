@@ -1,8 +1,8 @@
 # runshot
 
 **One-shot a complete visual record of any web app** — every screen, email, and
-social/link preview, plus a video — then lay every screen out as an editable
-[draw.io](https://app.diagrams.net) flow diagram (Figma export optional).
+social/link preview, plus a video — laid out as a browsable flow canvas
+(Figma export optional).
 
 ## Quick start (npx)
 
