@@ -72,5 +72,9 @@ app's `qa/skills.config.json` (the `walkthrough` section).
 - The flow creates a real account each run. The config's `freshIdentity` block
   controls how a unique email/username is generated per run (e.g. plus-addressing
   `you+run-<timestamp>@…`) so reruns don't collide.
-- If the user then asks to put these screens into Figma, hand off to the
-  `flow-doc` skill — it consumes this run's `screens/` and `manifest.json`.
+- The editable flow diagram is produced automatically: `runshot gallery` emits an
+  editable `flow.drawio` next to each run (one frame per screen in flow order),
+  openable in draw.io / diagrams.net. Nothing extra to invoke.
+- If the user specifically asks to put these screens into **Figma**, hand off to
+  the optional `flow-doc` skill — it consumes this run's `screens/` and
+  `manifest.json`.

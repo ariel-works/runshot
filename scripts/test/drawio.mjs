@@ -17,6 +17,31 @@ const here = dirname(fileURLToPath(import.meta.url));
 let failures = 0;
 const ok = (cond, msg) => { console.log(`${cond ? "✓" : "✗"} ${msg}`); if (!cond) failures++; };
 
+// Minimal well-formedness check: every start tag must close in LIFO order, so
+// draw.io / diagrams.net (a strict XML parser) opens the file without error.
+// Handles self-closing tags, the <?xml …?> prolog, and skips attribute values
+// (so `>` or `/` inside an attribute never confuses the matcher).
+function isWellFormedXml(xml) {
+  const stack = [];
+  const tagRe = /<(\/?)([A-Za-z_][\w.-]*)((?:[^>"']|"[^"]*"|'[^']*')*?)(\/?)>/g;
+  let m;
+  let lastEnd = 0;
+  while ((m = tagRe.exec(xml))) {
+    const [full, close, name, , selfClose] = m;
+    if (name === "?xml" || full.startsWith("<?")) continue; // prolog / PI
+    // Any non-whitespace text between the previous tag and this one is fine; we
+    // only validate tag nesting here, not text content.
+    lastEnd = tagRe.lastIndex;
+    if (close) {
+      if (stack.pop() !== name) return false; // mismatched / unbalanced close
+    } else if (!selfClose && !full.endsWith("/>")) {
+      stack.push(name);
+    }
+  }
+  void lastEnd;
+  return stack.length === 0;
+}
+
 // Smallest valid 1×1 PNG, so image embedding has real bytes to base64.
 const PNG_1x1 = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAMCAQDJ/0XmAAAAAElFTkSuQmCC",
@@ -43,6 +68,7 @@ try {
   const xml = await buildDrawioXml({ manifest, runDir, device: "phone", embed: true });
   ok(xml.startsWith("<?xml"), "emits an XML declaration");
   ok(xml.includes("<mxfile"), "has an <mxfile> root");
+  ok(isWellFormedXml(xml), "is well-formed XML (balanced tags — opens cleanly in draw.io)");
   // Two variants ("Zero state" default for the first two, "Seeded" for the third) → two pages.
   ok((xml.match(/<diagram /g) || []).length === 2, "one <diagram> page per variant (2)");
   // Three screens → three image cells across the pages.
