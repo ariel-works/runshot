@@ -1,10 +1,18 @@
 # runshot
 
-Record a fresh-account onboarding walkthrough of **any** web app in a mobile
-viewport — video + a screenshot of every screen (including zero-states) + any
-emails the flow triggers — then optionally lay those screens out as a Figma flow
-document. One flow definition; two outputs: a human-reviewable QA artifact
-(`record` mode) and a deterministic CI gate (`assert` mode).
+Builders shipping fast with AI can push code faster than ever — seeing what got
+built still means clicking through every flow by hand. Runshot closes that gap.
+
+Run one command and get a complete visual record of **any** web app: every screen
+(including zero-states), every email the flow triggers, a video walkthrough, and an
+**editable [draw.io](https://app.diagrams.net) flow diagram** (one frame per screen,
+in flow order). One config per app; nothing hard-coded. Two modes: a
+human-reviewable QA artifact (`record`) and a deterministic CI gate (`assert`).
+
+> **Flow output:** draw.io is the default editable flow — every gallery build
+> emits a `flow.drawio` next to the run, no extra tooling or accounts required
+> (see [draw.io flow](#drawio-flow-editable-diagram) below). Figma export is an
+> optional add-on via the `flow-doc` skill.
 
 The engine is config-driven, so the same procedure works for every app — the
 per-app specifics live in that app's `runshot/skills.config.json`. Nothing about the
@@ -15,7 +23,7 @@ target app is hard-coded.
 | Skill | What it does |
 |-------|--------------|
 | `walkthrough` | Drives the onboarding flow, records video + per-screen screenshots, captures emails, writes `manifest.json` + `summary.json`. Explicit-invoke only (creates real accounts/emails). |
-| `flow-doc` | Consumes a `walkthrough` run's `screens/` + `manifest.json` and builds/updates a Figma flow doc (one frame per screen, in flow order). Needs the Figma MCP **write** path. |
+| `flow-doc` | **Optional Figma export.** Consumes a `walkthrough` run's `screens/` + `manifest.json` and builds/updates a Figma flow doc (one frame per screen, in flow order). Needs the Figma MCP **write** path. The default editable flow is [draw.io](#drawio-flow-editable-diagram), which needs no skill — use `flow-doc` only when you specifically want the diagram in Figma. |
 
 ## Layout
 
@@ -85,7 +93,9 @@ Under `walkthrough`:
 - `expectedEmails[]` — `{ mailbox, subjectMatch, timeoutMs }`; each is captured as
   HTML + screenshot.
 
-Under `flowDoc.figma`: `fileKey` + `pageName` to update one Figma page in place.
+Under `flowDoc.figma` (optional — only used by the `flow-doc` Figma export skill):
+`fileKey` + `pageName` to update one Figma page in place. The default draw.io flow
+needs no config.
 
 ## Modes
 
@@ -108,9 +118,11 @@ gap.
 
 ## draw.io flow (editable diagram)
 
-Alongside the built-in flow canvas, every gallery build emits an **editable
-`flow.drawio`** next to each run (same source of truth: each screen's
-`flow:{col,row}` in `manifest.json`). It's [draw.io](https://app.diagrams.net)
+This is the **default editable flow output.** Alongside the built-in flow canvas,
+every gallery build emits an **editable `flow.drawio`** next to each run (same
+source of truth: each screen's `flow:{col,row}` in `manifest.json`) — one frame
+per screen, wired together with arrows in flow order. No account, MCP server, or
+extra skill required. It's [draw.io](https://app.diagrams.net)
 (mxGraph) XML — diff-able, version-controllable, and openable in the draw.io
 desktop/web app or the VS Code draw.io extension to rearrange, restyle, group, or
 re-export the flow as SVG/PNG. Screenshots are embedded so the file is portable.
@@ -207,8 +219,9 @@ each repo points at that app's ports.
 - The `walkthrough` skill is **explicit-invoke only** — it launches a browser and
   creates a real account each run. Use plus-addressed `freshIdentity` so reruns
   don't collide. Local QA accounts are fine; never point at production.
-- `flow-doc` needs the Figma MCP **write-to-canvas** path connected, and is
-  rate-limit sensitive — see `skills/flow-doc/SKILL.md`.
+- The editable flow ships as draw.io by default (above). `flow-doc` is the
+  **optional** Figma export — it needs the Figma MCP **write-to-canvas** path
+  connected and is rate-limit sensitive. See `skills/flow-doc/SKILL.md`.
 
 ## About page (Cloudflare Pages → runshot.org)
 

@@ -1,7 +1,7 @@
 {
   "name": "runshot",
-  "version": "0.1.17",
-  "description": "One-shot a complete visual record of any web app — every screen, email, and social preview, plus a video — then sync it to a Figma flow doc.",
+  "version": "0.1.18",
+  "description": "See your whole product from one config — every screen, every email, and a flow diagram. A QA artifact and deterministic CI gate for builders who ship fast.",
   "type": "module",
   "license": "MIT",
   "author": "Ariel Diaz",
@@ -11,7 +11,7 @@
   "scripts": { "test": "node test/smoke.mjs && node test/drawio.mjs" },
   "files": ["cli.mjs", "walkthrough.mjs", "gallery.mjs", "flow-drawio.mjs", "urls.mjs", "version.mjs", ".env.example"],
   "engines": { "node": ">=18" },
-  "keywords": ["screenshots", "product", "design", "qa", "e2e", "playwright", "figma", "video", "social-preview", "onboarding"],
+  "keywords": ["screenshots", "product", "design", "qa", "e2e", "playwright", "drawio", "flow-diagram", "figma", "video", "social-preview", "onboarding"],
   "dependencies": {
     "playwright": "^1.49.0"
   }

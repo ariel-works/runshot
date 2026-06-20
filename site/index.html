@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>runshot — a complete visual record of any web app</title>
-<meta name="description" content="Record a fresh-account onboarding walkthrough of any web app — video, a screenshot of every screen, the emails it triggers, and social/link previews — then sync it to a Figma flow doc. One config; a QA artifact and a deterministic CI gate.">
+<title>runshot — see your whole product, automatically</title>
+<meta name="description" content="See your whole product from one config — every screen, every email, and a flow diagram. A QA artifact and deterministic CI gate for builders who ship fast.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
 <!-- Open Graph / social preview -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="runshot — a complete visual record of any web app">
-<meta property="og:description" content="Video + every screen + triggered emails + social previews, from one config. A human-reviewable QA artifact and a deterministic CI gate.">
+<meta property="og:title" content="runshot — see your whole product, automatically">
+<meta property="og:description" content="Every screen, every email, a flow diagram — from one config. A QA artifact and CI gate for builders shipping fast with AI.">
 <meta property="og:url" content="https://runshot.org">
 <meta name="twitter:card" content="summary_large_image">
 <style>
@@ -61,9 +61,8 @@
   <header>
     <div class="logo">📸</div>
     <h1>runshot</h1>
-    <p class="tagline">One-shot a complete visual record of <em>any</em> web app — every
-      screen, the emails it triggers, and social/link previews, plus a video —
-      then sync it to a Figma flow doc.</p>
+    <p class="tagline">See your whole product, automatically — every screen, every
+      email, and a flow diagram, from one config.</p>
     <div class="cta">
       <a class="btn primary" href="https://github.com/ariel-works/runshot">View on GitHub →</a>
       <a class="btn" href="https://www.npmjs.com/package/runshot">npm: runshot</a>
@@ -72,14 +71,13 @@
 
   <section>
     <h2>What it is</h2>
-    <p>runshot drives a fresh-account onboarding walkthrough of any web app in a
-      mobile viewport and records a video, a screenshot of every screen (including
-      zero-states), and any emails the flow triggers. One flow definition produces
-      two outputs: a human-reviewable QA artifact (<code>record</code> mode) and a
-      deterministic CI gate (<code>assert</code> mode).</p>
-    <p>The engine is config-driven, so the same procedure works for every app — the
-      per-app specifics live in that app's <code>runshot/skills.config.json</code>.
-      Nothing about the target app is hard-coded.</p>
+    <p>Builders shipping fast with AI can push code faster than ever — seeing what
+      got built still means clicking through every flow by hand. Runshot closes that
+      gap: run one command and get a complete visual record of any web app.</p>
+    <p>Every screen (including zero-states), every email the flow triggers, a video
+      walkthrough, and an editable flow diagram — from a single config. One config
+      per app; nothing hard-coded. Two outputs: a human-reviewable QA artifact
+      (<code>record</code> mode) and a deterministic CI gate (<code>assert</code> mode).</p>
   </section>
 
   <section>
@@ -91,9 +89,9 @@
           captures emails, and writes <code>manifest.json</code> + <code>summary.json</code>.</p>
       </div>
       <div class="feature">
-        <h3>flow-doc</h3>
-        <p>Turns a run's screens into a Figma flow document — one frame per screen,
-          in flow order — via the Figma MCP write path.</p>
+        <h3>flow / draw.io</h3>
+        <p>Turns a run's screens into an editable draw.io flow diagram — one frame
+          per screen, in flow order. Diff-able, portable, no account required.</p>
       </div>
     </div>
   </section>
