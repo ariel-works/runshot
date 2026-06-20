@@ -28,6 +28,7 @@ runshot/
 ├── scripts/
 │   ├── walkthrough.mjs        # the engine (Playwright)
 │   ├── gallery.mjs            # browsable HTML hub for artifacts (multi-project)
+│   ├── flow-drawio.mjs        # manifest → editable draw.io flow diagram
 │   ├── urls.mjs               # central base-path / URL helper for the hub
 │   └── package.json
 ├── site/                      # static about page (Cloudflare Pages → runshot.org)
@@ -104,6 +105,25 @@ email capture is a no-op there (screenshots are unaffected). If your local stack
 is Mailpit, either point `inbucketUrl` at a real Inbucket, drop `expectedEmails`,
 or add a Mailpit adapter (`GET /api/v1/messages` + `search`). Tracked as a known
 gap.
+
+## draw.io flow (editable diagram)
+
+Alongside the built-in flow canvas, every gallery build emits an **editable
+`flow.drawio`** next to each run (same source of truth: each screen's
+`flow:{col,row}` in `manifest.json`). It's [draw.io](https://app.diagrams.net)
+(mxGraph) XML — diff-able, version-controllable, and openable in the draw.io
+desktop/web app or the VS Code draw.io extension to rearrange, restyle, group, or
+re-export the flow as SVG/PNG. Screenshots are embedded so the file is portable.
+
+The run's **Screens** tab links the file and offers an opt-in **Interactive
+draw.io view** (the diagrams.net viewer is fetched only on first click, so the
+default canvas view stays fully offline).
+
+```bash
+node scripts/flow-drawio.mjs <run-dir>          # write <run-dir>/flow.drawio (embedded screenshots)
+node scripts/flow-drawio.mjs <run-dir> --link   # reference screenshots by path (smaller file)
+npx runshot flow <run-dir>                       # same, via the CLI
+```
 
 ## Browse artifacts (multi-project)
 

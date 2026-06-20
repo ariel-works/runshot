@@ -31,6 +31,7 @@ Usage:
   runshot assert --config <file>             Same, but exit non-zero on any failure (CI gate)
   runshot gallery [--base <dir>]             Build the browsable HTML galleries
   runshot serve   [--base <dir>] [--port n]  Build + serve the gallery hub (0.0.0.0:8080)
+  runshot flow    <run-dir> [--link]         Emit an editable flow.drawio from a run's manifest
   runshot version                            Print the version
 
 Config defaults to ./runshot/skills.config.json.
@@ -43,6 +44,7 @@ switch (cmd) {
   case "assert": node("walkthrough.mjs", ["--mode", "assert", ...rest]); break;
   case "gallery": node("gallery.mjs", rest); break;
   case "serve": node("gallery.mjs", ["--serve", ...rest]); break;
+  case "flow": node("flow-drawio.mjs", rest); break;
   case "version": case "--version": case "-v": console.log(`runshot v${VERSION}`); break;
   case undefined: case "help": case "--help": case "-h": console.log(HELP); break;
   default: console.error(`Unknown command: ${cmd}\n\n${HELP}`); process.exit(1);
